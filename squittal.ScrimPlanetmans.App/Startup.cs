@@ -31,6 +31,7 @@ namespace squittal.ScrimPlanetmans.App
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddControllers();
             services.AddServerSideBlazor();
 
             services.AddSignalR();
@@ -130,6 +131,7 @@ namespace squittal.ScrimPlanetmans.App
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
+                endpoints.MapControllers();
                 endpoints.MapFallbackToPage("/_Host");
             });
         }
