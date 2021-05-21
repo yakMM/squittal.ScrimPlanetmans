@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using squittal.ScrimPlanetmans.Logging;
 using squittal.ScrimPlanetmans.Models;
 using squittal.ScrimPlanetmans.Services.Planetside;
@@ -20,6 +22,7 @@ namespace squittal.ScrimPlanetmans.Services
         private readonly IVehicleService _vehicleService;
 
         private readonly ISqlScriptRunner _adhocScriptRunner;
+        private readonly IWebHostEnvironment _env;
 
         private readonly CensusStoreDataComparisonRow _mapRegions;
         private readonly CensusStoreDataComparisonRow _facilityTypes;
@@ -47,7 +50,8 @@ namespace squittal.ScrimPlanetmans.Services
             IWorldService worldService,
             IFactionService factionService,
             IVehicleService vehicleService,
-            ISqlScriptRunner adhocScriptRunner
+            ISqlScriptRunner adhocScriptRunner,
+            IWebHostEnvironment env
             )
         {
             _facilityService = facilityService;
@@ -61,6 +65,7 @@ namespace squittal.ScrimPlanetmans.Services
             _factionService = factionService;
             _vehicleService = vehicleService;
             _adhocScriptRunner = adhocScriptRunner;
+            _env = env;
 
             _mapRegions = new CensusStoreDataComparisonRow("Map Regions", _facilityService);
             _facilityTypes = new CensusStoreDataComparisonRow("Facility Types", _facilityTypeService);
@@ -136,7 +141,7 @@ namespace squittal.ScrimPlanetmans.Services
 
         public IEnumerable<string> GetAdHocSqlFileNames()
         {
-            return SqlScriptFileHandler.GetAdHocSqlFileNames();
+            return SqlScriptFileHandler.GetAdHocSqlFileNames(Path.GetFullPath(Path.Combine(_env.ContentRootPath, "..\\sql_adhoc")));
         }
 
         public bool TryRunAdHocSqlScript(string fileName, out string info)

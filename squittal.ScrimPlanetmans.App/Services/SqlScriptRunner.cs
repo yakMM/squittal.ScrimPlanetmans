@@ -2,6 +2,9 @@
 using System.IO;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.SqlClient;
 
 namespace squittal.ScrimPlanetmans.Services
 {
@@ -12,18 +15,21 @@ namespace squittal.ScrimPlanetmans.Services
         private readonly string _scriptDirectory;
         private readonly string _adhocScriptDirectory;
 
-        private readonly Server _server = new Server("(LocalDB)\\MSSQLLocalDB");
+        private readonly Server _server;
 
         private readonly ILogger<SqlScriptRunner> _logger;
 
-        public SqlScriptRunner(ILogger<SqlScriptRunner> logger)
+        public SqlScriptRunner(ILogger<SqlScriptRunner> logger, IConfiguration configuration, IWebHostEnvironment env)
         {
             _logger = logger;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(configuration.GetConnectionString("PlanetmansDbContext"));
+
+            _server = new Server(builder.DataSource);
 
             _basePath = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
             _scriptDirectory = Path.Combine(_basePath, _sqlDirectory);
 
-            _adhocScriptDirectory = Path.GetFullPath(Path.Combine(_basePath, "..", "..", "..", "..\\sql_adhoc"));
+            _adhocScriptDirectory = Path.GetFullPath(Path.Combine(env.ContentRootPath, "..\\sql_adhoc"));
         }
 
         public void RunSqlScript(string fileName, bool minimalLogging = false)

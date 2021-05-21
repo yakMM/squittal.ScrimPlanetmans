@@ -1,5 +1,6 @@
 ﻿// Credit to Lampjaw @ Voidwell.DaybreakGames
 using DaybreakGames.Census.Stream;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -32,11 +33,11 @@ namespace squittal.ScrimPlanetmans.CensusStream
         private readonly ILogger<StreamClient> _logger;
 
 
-        public StreamClient(ILogger<StreamClient> logger)
+        public StreamClient(ILogger<StreamClient> logger, IConfiguration config)
         {
             _logger = logger;
 
-            CensusServiceKey = Environment.GetEnvironmentVariable("DaybreakGamesServiceKey", EnvironmentVariableTarget.User);
+            CensusServiceKey = config.GetValue<string>("DaybreakGamesServiceKey");
         }
 
         private Func<string, Task> _onMessage;

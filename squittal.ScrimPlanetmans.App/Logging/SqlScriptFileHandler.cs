@@ -8,10 +8,9 @@ namespace squittal.ScrimPlanetmans.Logging
 {
     public class SqlScriptFileHandler
     {
-        public static IEnumerable<string> GetAdHocSqlFileNames()
+        public static IEnumerable<string> GetAdHocSqlFileNames(string adhocScriptDirectory)
         {
             var basePath = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
-            var adhocScriptDirectory = Path.GetFullPath(Path.Combine(basePath, "..", "..", "..", "..\\sql_adhoc"));
 
             var scripts = new List<string>();
 

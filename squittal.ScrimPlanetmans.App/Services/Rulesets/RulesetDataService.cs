@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using squittal.ScrimPlanetmans.Data;
 using squittal.ScrimPlanetmans.Logging;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -28,6 +30,7 @@ namespace squittal.ScrimPlanetmans.Services.Rulesets
         private readonly IItemCategoryService _itemCategoryService;
         private readonly IScrimMessageBroadcastService _messageService;
         private readonly ILogger<RulesetDataService> _logger;
+        private readonly string _rulesetDirectory;
 
         private ConcurrentDictionary<int, Ruleset> RulesetsMap { get; set; } = new ConcurrentDictionary<int, Ruleset>();
 
@@ -54,8 +57,10 @@ namespace squittal.ScrimPlanetmans.Services.Rulesets
         public static Regex RulesetDefaultMatchTitleRegex => RulesetNameRegex; //(^(?!.)$|^([A-Za-z0-9()\[\]\-_'.][ ]{0,1}){1,49}[A-Za-z0-9()\[\]\-_'.]$)
 
         public RulesetDataService(IDbContextHelper dbContextHelper, IFacilityService facilityService, IItemService itemService, IItemCategoryService itemCategoryService,
-                                    IScrimMessageBroadcastService messageService, ILogger<RulesetDataService> logger)
+                                    IScrimMessageBroadcastService messageService, ILogger<RulesetDataService> logger, IWebHostEnvironment env)
         {
+
+            _rulesetDirectory = Path.GetFullPath(Path.Combine(env.ContentRootPath, "..\\rulesets"));
             _dbContextHelper = dbContextHelper;
             _facilityService = facilityService;
             _itemService = itemService;
@@ -1943,8 +1948,7 @@ namespace squittal.ScrimPlanetmans.Services.Rulesets
 
                     var fileName = GetRulesetFileName(rulesetId, ruleset.Name);
 
-
-                    if (await RulesetFileHandler.WriteToJsonFile(fileName, new JsonRuleset(ruleset, fileName)))
+                    if (await RulesetFileHandler.WriteToJsonFile(_rulesetDirectory, fileName, new JsonRuleset(ruleset, fileName)))
                     {
                         _logger.LogInformation($"Exported ruleset {rulesetId} to file {fileName}");
 
@@ -1977,7 +1981,7 @@ namespace squittal.ScrimPlanetmans.Services.Rulesets
                 var stopWatchTotal = Stopwatch.StartNew();
                 stopWatchReadJson.Start();
 
-                var jsonRuleset = await RulesetFileHandler.ReadFromJsonFile(fileName);
+                var jsonRuleset = await RulesetFileHandler.ReadFromJsonFile(_rulesetDirectory, fileName);
 
                 if (jsonRuleset == null)
                 {
@@ -2178,7 +2182,7 @@ namespace squittal.ScrimPlanetmans.Services.Rulesets
 
         public IEnumerable<string> GetJsonRulesetFileNames()
         {
-            return RulesetFileHandler.GetJsonRulesetFileNames();
+            return RulesetFileHandler.GetJsonRulesetFileNames(_rulesetDirectory);
         }
 
         private string GetRulesetFileName(int rulesetId, string rulesetName)
