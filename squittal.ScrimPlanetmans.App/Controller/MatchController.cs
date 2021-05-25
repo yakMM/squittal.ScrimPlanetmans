@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using squittal.ScrimPlanetmans.ScrimMatch;
+using squittal.ScrimPlanetmans.App.Services;
 using squittal.ScrimPlanetmans.Models.ScrimEngine;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace squittal.ScrimPlanetmans.App.Controller
 {
     [Route("api")]
+    [ServiceFilter(typeof(IpCheckFilter))]
     [ApiController]
     public class MatchController : ControllerBase
     {
@@ -62,7 +65,7 @@ namespace squittal.ScrimPlanetmans.App.Controller
             _matchEngine.MatchConfiguration.TrySetRoundLength(int.Parse(value), true);
         }
 
-        // POST api/title
+        // POST api/base
         [HttpPost("base")]
         public void PostBase([FromBody] string value)
         {

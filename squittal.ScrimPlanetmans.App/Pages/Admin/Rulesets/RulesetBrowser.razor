@@ -1,14 +1,15 @@
 ﻿@page "/RulesetBrowser"
 @page "/Rulesets"
+@attribute [Authorize]
 
 @using squittal.ScrimPlanetmans.App.Pages.Shared;
-@using squittal.ScrimPlanetmans.ScrimMatch; 
+@using squittal.ScrimPlanetmans.ScrimMatch;
 @using squittal.ScrimPlanetmans.ScrimMatch.Models;
 @using squittal.ScrimPlanetmans.Services.Rulesets;
 @using System.Threading;
 @using Microsoft.AspNetCore.WebUtilities @*for QueryHelpers*@
 
-@inject IRulesetDataService RulesetDataService 
+@inject IRulesetDataService RulesetDataService
 @inject IScrimRulesetManager RulesetManager
 @inject NavigationManager NavManager
 
@@ -59,7 +60,7 @@
                     <div class="sq-content sans-serif-font" style="font-family: Roboto, 'Segoe UI', sans-serif; margin: 8px 0 16px 0; padding: 8px 16px; border: 1px solid var(--sq-black-alpha-50); border-radius: 0.2rem; width: max-content; box-shadow: 0px 1px 3px 0px var(--sq-light-blue-gray); font-size: 0.9rem;">
 
                         <div style="font-weight: 500; font-size: 1rem; margin-bottom: 0;">Import Ruleset</div>
-                    
+
                         <p style="margin: 0 0 4px 0; padding: 0; font-size: smaller;">Create a new ruleset from a ruleset JSON file.</p>
 
                         <EditForm Model="@_selectedImportRulesetFileName" OnValidSubmit="(() => OnImportNewRulesetFormSubmit(false))" style="display: inline-block; margin-top: 8px;">
@@ -71,18 +72,18 @@
                                 <span style="width: 110px; padding-right: 4px; display: inline-block;">Ruleset:</span><InputSelect style="margin-right: 5px; width: 250px; padding: 0.1rem;" @bind-Value="@_selectedImportRulesetFileName">
 
                                     @if (string.IsNullOrWhiteSpace(_selectedImportRulesetFileName))
-                                    {
+                                            {
                                         <option value=@_selectedImportRulesetFileName label="Select a ruleset to import" style="font-style: italic;">Select a ruleset to import</option>
-                                    }
-                                    else
-                                    {
+                                            }
+                                            else
+                                            {
                                         <option value=@_selectedImportRulesetFileName label="@_selectedImportRulesetFileName">@_selectedImportRulesetFileName</option>
-                                    }
+                                            }
 
                                     @foreach (var fileName in _rulesetFileNames.Where(r => r != _selectedImportRulesetFileName))
-                                    {
+                                            {
                                         <option value=@fileName label="@fileName">@fileName</option>
-                                    }
+                                            }
                                 </InputSelect>
 
                                 <div style="margin: 8px 0 0 0; font-size: 0.9rem;"><InputCheckbox style="position: relative; top: 1px;" @bind-Value="_openImportedRulesetOnSave" /><span style="padding-left: 8px;">Open Ruleset On Save?</span></div>

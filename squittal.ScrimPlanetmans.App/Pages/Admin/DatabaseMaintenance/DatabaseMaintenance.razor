@@ -1,4 +1,5 @@
 ﻿@page "/DbAdmin"
+@attribute [Authorize]
 
 @using squittal.ScrimPlanetmans.Models;
 @using squittal.ScrimPlanetmans.Services;
@@ -46,7 +47,7 @@
 
                 @if (_adhocSqlFiles.Any())
                 {
-                    <EditForm Model="@_selectedAdHocSqlFile" style="display: inline-block; font-size: 0.9rem;"  class="sans-serif-font">
+                    <EditForm Model="@_selectedAdHocSqlFile" style="display: inline-block; font-size: 0.9rem;" class="sans-serif-font">
                         <DataAnnotationsValidator />
                         <ValidationSummary />
 
@@ -57,9 +58,9 @@
                                 <option value=@string.Empty style="font-style: italic;">No File Selected</option>
 
                                 @foreach (var fileName in _adhocSqlFiles)
-                                {
+                                    {
                                     <option value=@fileName label="@fileName"></option>
-                                }
+                                    }
                             </InputSelect>
 
                             @if (!string.IsNullOrWhiteSpace(_selectedAdHocSqlFile))

@@ -2,6 +2,7 @@
 @page "/MatchReport"
 @page "/ReportBrowser"
 @page "/ScrimMatches"
+@attribute [Authorize]
 
 @using squittal.ScrimPlanetmans.App.Pages.Shared;
 @using squittal.ScrimPlanetmans.Models;
@@ -42,7 +43,7 @@
                         <button type="submit" class="btn btn-primary">
                             <span class="oi oi-magnifying-glass"></span>Search
                         </button>
-                
+
                         @if (!_searchFilter.IsDefaultFilter || _isFilteredResults)
                         {
                             <button class="btn btn-outline-primary" @onclick="OnClearSearchFilters">
@@ -51,23 +52,24 @@
                         }
 
                         <div style="margin-bottom: 8px; display: block;">
-                            
-                            @if (_rulesets != null)
-                            { 
-                            <div style="margin-left: 0; margin-right: 16px; margin-bottom: 0.5rem; display: inline-block;">Ruleset: 
-                                <InputSelect TValue="string" style="width: 175px; padding: 0.1rem; display: inline-block;" Value="@_searchFilter.RulesetIdString" ValueChanged="@((string s) => _searchFilter.SetRulesetId(s))" ValueExpression="@(() => _searchFilter.RulesetIdString)">
-                                <option value=@_anyRulesetIdValue>Any Ruleset</option>
 
-                                    @foreach (var ruleset in _rulesets)
-                                    {
+                            @if (_rulesets != null)
+                            {
+                                <div style="margin-left: 0; margin-right: 16px; margin-bottom: 0.5rem; display: inline-block;">
+                                    Ruleset:
+                                    <InputSelect TValue="string" style="width: 175px; padding: 0.1rem; display: inline-block;" Value="@_searchFilter.RulesetIdString" ValueChanged="@((string s) => _searchFilter.SetRulesetId(s))" ValueExpression="@(() => _searchFilter.RulesetIdString)">
+                                        <option value=@_anyRulesetIdValue>Any Ruleset</option>
+
+                                        @foreach (var ruleset in _rulesets)
+                                        {
                                             <option value=@ruleset.Id.ToString() label="@ruleset.Name">@ruleset.Name (@ruleset.Id.ToString())</option>
-                                    }
-                            </InputSelect>
-                            </div>
+                                        }
+                                    </InputSelect>
+                                </div>
                             }
-                            
+
                             @if (_worlds != null)
-                            { 
+                            {
                                 <InputSelect TValue="string" style="margin-left: 0; margin-right: 4px; width: 125px; padding: 0.1rem; display: inline-block;" Value="@_searchFilter.WorldIdString" ValueChanged="@((string s) => _searchFilter.SetWorldId(s))" ValueExpression="@(() => _searchFilter.WorldIdString)">
                                     <option value=@_anyWorldIdValue>All Servers</option>
 
@@ -83,7 +85,7 @@
                                 <option value=@_noFacilitIdFilterValue>No Filter</option>
 
                                 @if (_mapZones != null && _mapRegions != null)
-                                { 
+                                {
                                     @foreach (var zone in _mapZones)
                                     {
                                         <optgroup label="@(_zones.Where(z => zone == z.Id).Select(z => z.Name).FirstOrDefault())" style="background-color: var(--sq-bg-white-unlit); color: var(--sq-pink); font-size: 1rem;">@(_zones.Where(z => zone == z.Id).Select(z => z.Name).FirstOrDefault())</optgroup>
@@ -95,7 +97,7 @@
                                     }
                                 }
                             </InputSelect>
-                    
+
                             <div style="margin-left: 0; margin-right: 16px; margin-bottom: 0.5rem; display: inline-block;">From: <InputDate style="" @bind-Value="_searchFilter.SearchStartDate" /></div>
                             <div style="margin-left: 8px; margin-bottom: 0.5rem; display: inline-block;">To: <InputDate style="" @bind-Value="_searchFilter.SearchEndDate" /></div>
 
@@ -208,18 +210,18 @@
                 }
 
                 @*
-                <p>@_storeScrimMatchList.Count()</p>
-                <p>Search Terms: @_debug</p>
-                @foreach (var term in _searchFilter.SearchTermsList)
-                {
-                    <p style="margin: 0;">@term</p>
-                }
-                <p>Is Filtered: @_isFilteredResults</p>
-                <p>Is Default: @_searchFilter.IsDefaultFilter</p>
-                    
-                <p>Start: @(_searchFilter.SearchStartDate.ToString())</p>
-                <p>  End: @(_searchFilter.SearchEndDate.ToString())</p>
-                 *@
+                    <p>@_storeScrimMatchList.Count()</p>
+                    <p>Search Terms: @_debug</p>
+                    @foreach (var term in _searchFilter.SearchTermsList)
+                    {
+                        <p style="margin: 0;">@term</p>
+                    }
+                    <p>Is Filtered: @_isFilteredResults</p>
+                    <p>Is Default: @_searchFilter.IsDefaultFilter</p>
+
+                    <p>Start: @(_searchFilter.SearchStartDate.ToString())</p>
+                    <p>  End: @(_searchFilter.SearchEndDate.ToString())</p>
+                *@
             </div>
 
         </div>

@@ -1,9 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using squittal.ScrimPlanetmans.App.Services;
 using squittal.ScrimPlanetmans.CensusServices;
 using squittal.ScrimPlanetmans.CensusStream;
 using squittal.ScrimPlanetmans.Data;
@@ -35,10 +40,16 @@ namespace squittal.ScrimPlanetmans.App
                 options.AutomaticAuthentication = false;
             });
             services.AddRazorPages();
-            services.AddControllers();
             services.AddServerSideBlazor();
 
             services.AddSignalR();
+
+            services.AddScoped<IpCheckFilter>();
+            services.AddScoped<AuthenticationStateProvider, IpAuthStateProvider>();
+            services.AddOptions();
+            services.AddAuthorizationCore();            
+
+            services.AddControllers();
 
             services.AddDbContext<PlanetmansDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("PlanetmansDbContext"),
@@ -111,6 +122,10 @@ namespace squittal.ScrimPlanetmans.App
             services.AddTransient<ISqlScriptRunner, SqlScriptRunner>();
 
             services.AddTransient<DatabaseMaintenanceService>();
+
+            
+
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -129,12 +144,10 @@ namespace squittal.ScrimPlanetmans.App
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub();
+                endpoints.MapBlazorHub();                   
                 endpoints.MapControllers();
                 endpoints.MapFallbackToPage("/_Host");
             });

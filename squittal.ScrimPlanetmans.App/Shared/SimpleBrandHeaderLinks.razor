@@ -2,24 +2,27 @@
     <img src="./images/squittal_icon_head.png" title="squittal" alt="squittal" />
     <span>squittal.ScrimPlanetmans</span>
     <span>squittal.ScrimPlanetmans</span>
+    <AuthorizeView>
+        <NavLink class="nav-link" href="MatchSetup">Match Setup</NavLink>
 
-    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">Match Setup</NavLink>
-
-    <NavLink class="nav-link" href="reports">Reports</NavLink>
+        <NavLink class="nav-link" href="reports">Reports</NavLink>
+    </AuthorizeView>
 
     <NavLink class="nav-link" href="Overlay" target="_blank">Overlay</NavLink>
 
-    <NavLink class="nav-link" href="DbAdmin">Database</NavLink>
+    <AuthorizeView>
+        <NavLink class="nav-link" href="DbAdmin">Database</NavLink>
 
-    <NavLink class="nav-link" href="rulesets">Rulesets</NavLink>
-    
-    <NavLink class="nav-link" href="TeamBuilder">Team Builder</NavLink>
-    
-    <NavLink class="nav-link" href="testteamreport">Team Stats (test)</NavLink>
+        <NavLink class="nav-link" href="rulesets">Rulesets</NavLink>
 
-    <NavLink class="nav-link" href="testairvehiclereport">Air Stats (test)</NavLink>
+        <NavLink class="nav-link" href="TeamBuilder">Team Builder</NavLink>
 
-    <NavLink class="nav-link" href="testgroundvehiclereport">Ground Stats (test)</NavLink>
+        <NavLink class="nav-link" href="testteamreport">Team Stats (test)</NavLink>
+
+        <NavLink class="nav-link" href="testairvehiclereport">Air Stats (test)</NavLink>
+
+        <NavLink class="nav-link" href="testgroundvehiclereport">Ground Stats (test)</NavLink>
+    </AuthorizeView>
 
     <div style="position: absolute; top: 0; right: 0; width: max-content; padding: 0.5rem 1rem;">
         <RealTimeClock />
