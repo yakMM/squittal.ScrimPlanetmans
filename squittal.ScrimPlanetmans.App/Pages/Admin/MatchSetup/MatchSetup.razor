@@ -277,7 +277,7 @@
             var rulesetsTask = SetUpRulesetsAsync();
             TaskList.Add(rulesetsTask);
 
-            var activeRulesetConfigTask = SetUpActiveRulesetConfigAsync();
+            var activeRulesetConfigTask = SetUpActiveRulesetConfigAsync(true);
             TaskList.Add(activeRulesetConfigTask);
 
             await Task.WhenAll(TaskList);
@@ -330,7 +330,7 @@
         InvokeAsyncStateHasChanged();
     }
 
-    private async Task SetUpActiveRulesetConfigAsync()
+    private async Task SetUpActiveRulesetConfigAsync(bool is_init = false)
     {
         _isLoadingActiveRulesetConfig = true;
 
@@ -341,7 +341,9 @@
             _selectedRuleset = _activeRuleset;
             _inputSelectRulesetStringId = _activeRuleset.Id.ToString();
 
-            if (_matchConfiguration != null)
+            // Why override the match configuration every time the page is loaded? (is_init = true)
+            // It should be done in object initialization, not trigged by UI?
+            if (!is_init && _matchConfiguration != null)
             {
                 _matchConfiguration.TrySetRoundLength(_activeRuleset.DefaultRoundLength, false);
                 _matchConfiguration.TrySetEndRoundOnFacilityCapture(_activeRuleset.DefaultEndRoundOnFacilityCapture, false);
@@ -354,7 +356,7 @@
                     newTitle = string.Empty;
                 }
 
-                if (_matchConfiguration.TrySetTitle(newTitle, true))
+                if (_matchConfiguration.TrySetTitle(newTitle, false))
                 {
                     if (newTitle != oldTitle)
                     {

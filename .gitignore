@@ -345,3 +345,4 @@ rulesets/*.json
 /_stream test images
 /sql_adhoc/test_file.sql
 *.sql
+*appsettings.json

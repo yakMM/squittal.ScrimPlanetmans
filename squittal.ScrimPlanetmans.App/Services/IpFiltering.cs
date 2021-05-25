@@ -39,12 +39,16 @@ namespace squittal.ScrimPlanetmans.App.Services
 
             foreach (var address in ipList)
             {
-                var testIp = IPAddress.Parse(address);
-
-                if (testIp.Equals(remoteIp))
+                try
                 {
-                    return true;
+                    var testIp = IPAddress.Parse(address);
+                    if (testIp.Equals(remoteIp))
+                    {
+                        return true;
+                    }
                 }
+                catch(FormatException)
+                { }
             }
             return false;
         }

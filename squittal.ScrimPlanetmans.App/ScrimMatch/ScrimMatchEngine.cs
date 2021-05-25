@@ -47,6 +47,13 @@ namespace squittal.ScrimPlanetmans.ScrimMatch
             _messageService = messageService;
             _matchDataService = matchDataService;
             _rulesetManager = rulesetManager;
+            
+            // Copy default values to match config
+            var activeRuleset =  rulesetManager.ActiveRuleset;
+            MatchConfiguration.TrySetTitle(activeRuleset.DefaultMatchTitle, false);
+            MatchConfiguration.TrySetRoundLength(activeRuleset.DefaultRoundLength, false);
+            MatchConfiguration.TrySetEndRoundOnFacilityCapture(activeRuleset.DefaultEndRoundOnFacilityCapture, false);
+
             _logger = logger;
 
             _messageService.RaiseMatchTimerTickEvent += async (s, e) => await OnMatchTimerTick(s, e);
