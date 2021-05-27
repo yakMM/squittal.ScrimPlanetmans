@@ -12,6 +12,13 @@ using squittal.ScrimPlanetmans.Services.ScrimMatch;
 
 namespace squittal.ScrimPlanetmans.App.Controller
 {
+
+    public class PlayerModel
+    {
+        public string id { get; set; }
+        public string alias { get; set; }
+    }
+
     [Route("api")]
     [ServiceFilter(typeof(IpCheckFilter))]
     [ApiController]
@@ -30,27 +37,44 @@ namespace squittal.ScrimPlanetmans.App.Controller
             _configuration = matchEngine.MatchConfiguration;
         }
 
-
         // POST api/teams/{id}
         [HttpPost("teams/{id}")]
-        async public void PostTeams(int id, [FromBody] string value)
+        async public void PostTeams(int id, List<PlayerModel> newPlayersList)
         {
-            var charArray = value.Split(',');
             IEnumerable<string> oldPlayers = _teamsManager.GetTeam(id).GetAllPlayerIds();
-
-            foreach (var playerId in charArray)
-            {
-                if (!_teamsManager.GetTeam(id).ContainsPlayer(playerId))
-                {
-                    await _teamsManager.TryAddFreeTextInputCharacterToTeam(id, playerId);
-                }
-            }
+            var charArray = newPlayersList.Select(x => x.id).ToArray();
 
             foreach (var playerId in oldPlayers)
             {
                 if (!charArray.Contains(playerId))
                 {
-                    _teamsManager.SetPlayerBenchedStatus(playerId, true);
+                    if (_matchEngine.GetCurrentRound() == 0)
+                    {
+                        _teamsManager.RemoveCharacterFromTeam(playerId);
+                    }
+                    else
+                    {
+                        _teamsManager.SetPlayerBenchedStatus(playerId, true);
+                    }
+                }
+            }
+
+            foreach (var player in newPlayersList)
+            {
+                if(player.id != null)
+                {
+                    if (!_teamsManager.GetTeam(id).ContainsPlayer(player.id))
+                    {
+                        await _teamsManager.TryAddFreeTextInputCharacterToTeam(id, player.id);
+                    }
+                    else
+                    {
+                        _teamsManager.SetPlayerBenchedStatus(player.id, false);
+                    }
+                    if (player.alias != null)
+                    {
+                        await _teamsManager.UdatePlayerTemporaryAlias(player.id, player.alias);
+                    }
                 }
             }
         }

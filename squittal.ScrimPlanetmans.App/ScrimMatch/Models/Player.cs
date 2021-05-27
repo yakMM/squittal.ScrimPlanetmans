@@ -71,7 +71,7 @@ namespace squittal.ScrimPlanetmans.ScrimMatch.Models
 
         public bool IsAdHocPlayer => GetIsAdHocPlayer();
 
-        private static readonly Regex _nameRegex = new Regex("^[A-Za-z0-9]{1,32}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _nameRegex = new Regex("^[ -■]{1,32}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         
         // Format for Planetside Infantry League: Season 2 => Namex##
         private static readonly Regex _pil2NameRegex = new Regex("^[A-z0-9]{2,}(x[0-9]{2})$", RegexOptions.Compiled);
